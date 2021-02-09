@@ -11,7 +11,7 @@ import kotlin.test.assertTrue
 /**
  * A simple functional test for the 'org.schnabelsoft.gradle.python.plugin.greeting' plugin.
  */
-class OrgSchnabelsoftGradlePythonPluginPluginFunctionalTest {
+class GradlePythonPluginFunctionalTest {
     @Test fun `can run task`() {
         // Setup the test build
         val projectDir = File("build/functionalTest")
@@ -19,7 +19,7 @@ class OrgSchnabelsoftGradlePythonPluginPluginFunctionalTest {
         projectDir.resolve("settings.gradle").writeText("")
         projectDir.resolve("build.gradle").writeText("""
             plugins {
-                id('org.schnabelsoft.gradle.python.plugin.greeting')
+                id('org.schnabelsoft.gradle.python')
             }
         """)
 
@@ -32,6 +32,6 @@ class OrgSchnabelsoftGradlePythonPluginPluginFunctionalTest {
         val result = runner.build();
 
         // Verify the result
-        assertTrue(result.output.contains("Hello from plugin 'org.schnabelsoft.gradle.python.plugin.greeting'"))
+        assertTrue(result.output.contains("Hello from plugin 'org.schnabelsoft.gradle.python'"))
     }
 }

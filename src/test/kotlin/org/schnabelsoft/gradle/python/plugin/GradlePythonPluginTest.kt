@@ -10,11 +10,11 @@ import kotlin.test.assertNotNull
 /**
  * A simple unit test for the 'org.schnabelsoft.gradle.python.plugin.greeting' plugin.
  */
-class OrgSchnabelsoftGradlePythonPluginPluginTest {
+class GradlePythonPluginTest {
     @Test fun `plugin registers task`() {
         // Create a test project and apply the plugin
         val project = ProjectBuilder.builder().build()
-        project.plugins.apply("org.schnabelsoft.gradle.python.plugin.greeting")
+        project.plugins.apply("org.schnabelsoft.gradle.python")
 
         // Verify the result
         assertNotNull(project.tasks.findByName("greeting"))

@@ -7,11 +7,9 @@
  */
 
 plugins {
-    // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     `java-gradle-plugin`
-
-    // Apply the Kotlin JVM plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.3.72"
+    id("org.jetbrains.kotlin.jvm") version "1.4.20"
+    id("maven-publish")
 }
 
 repositories {
@@ -34,11 +32,14 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
 
+group = "org.schnabelsoft"
+version = "0.1.0"
+
 gradlePlugin {
     // Define the plugin
     val greeting by plugins.creating {
-        id = "org.schnabelsoft.gradle.python.plugin.greeting"
-        implementationClass = "org.schnabelsoft.gradle.python.plugin.OrgSchnabelsoftGradlePythonPluginPlugin"
+        id = "org.schnabelsoft.gradle.python"
+        implementationClass = "org.schnabelsoft.gradle.python.plugin.GradlePythonPlugin"
     }
 }
 
