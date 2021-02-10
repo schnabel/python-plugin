@@ -1,16 +1,23 @@
 package org.schnabelsoft.gradle.python.plugin
 
-import org.gradle.api.tasks.Exec
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.options.Option
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.*
+import org.gradle.work.Incremental
 
-open class PipenvInstallTask : Exec() {
+abstract class PipenvInstallTask : Exec() {
+
+    @get:Incremental
+    @get:InputFile
+    abstract val pipfile: RegularFileProperty
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
     init {
-        setGroup("python")
-        val env = mapOf("WORKON_HOME" to "build")
+        val env = mapOf("WORKON_HOME" to "build/venv")
         environment(env)
         setCommandLine("pipenv", "install", "--dev")
+        group = "python"
     }
 }
