@@ -17,6 +17,6 @@ class GradlePythonPluginTest {
         project.plugins.apply("org.schnabelsoft.gradle.python")
 
         // Verify the result
-        assertNotNull(project.tasks.findByName("greeting"))
+        assertNotNull(project.tasks.findByName("pipenv"))
     }
 }

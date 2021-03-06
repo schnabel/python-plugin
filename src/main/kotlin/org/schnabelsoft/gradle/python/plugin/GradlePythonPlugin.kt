@@ -7,18 +7,17 @@ import org.gradle.api.Project
 import org.gradle.api.Plugin
 
 open class PythonPluginExtension {
-    var message = "Hello from plugin 'org.schnabelsoft.gradle.python'"
+    var sourceDir = "src"
 }
 
 class GradlePythonPlugin: Plugin<Project> {
     override fun apply(project: Project) {
         val extension = project.extensions.create<PythonPluginExtension>("python", PythonPluginExtension::class.java)
-        val greetingTask = project.tasks.create("greeting", GreetingTask::class.java)
         val pipenvTask = project.tasks.create("pipenv", PipenvInstallTask::class.java)
         pipenvTask.outputDir.set(project.layout.buildDirectory.dir("venv"))
         pipenvTask.pipfile.set(project.layout.projectDirectory.file("Pipfile"))
         project.tasks.register<PytestTask>("pytest", PytestTask::class.java) {
-            it.inputDir.set(project.layout.projectDirectory.dir("src"))
+            it.inputDir.set(project.layout.projectDirectory.dir(extension.sourceDir))
             it.outputDir.set(project.layout.buildDirectory.dir("venv"))
             it.dependsOn(pipenvTask)
         }

@@ -5,8 +5,13 @@ package org.schnabelsoft.gradle.python.plugin
 
 import java.io.File
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
+import org.junit.Before
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import kotlin.test.Test
-import kotlin.test.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 
 /**
  * A simple functional test for the 'org.schnabelsoft.gradle.python.plugin.greeting' plugin.
@@ -17,6 +22,18 @@ class GradlePythonPluginFunctionalTest {
         val projectDir = File("build/functionalTest")
         projectDir.mkdirs()
         projectDir.resolve("settings.gradle").writeText("")
+        projectDir.resolve("Pipfile").writeText("""
+            [[source]]
+            url = "https://pypi.python.org/simple"
+            verify_ssl = true
+            name = "pypi"
+            
+            [packages]
+            requests = "*"
+           
+            [dev-packages]
+            pytest = "*"
+        """.trimIndent())
         projectDir.resolve("build.gradle").writeText("""
             plugins {
                 id('org.schnabelsoft.gradle.python')
@@ -27,11 +44,51 @@ class GradlePythonPluginFunctionalTest {
         val runner = GradleRunner.create()
         runner.forwardOutput()
         runner.withPluginClasspath()
-        runner.withArguments("greeting")
+        runner.withArguments("pipenv")
+        runner.withProjectDir(projectDir)
+        runner.build();
+    }
+
+    @Test fun `can run task pipenv_run`() {
+        // Setup the test build
+        val projectDir = File("build/functionalTest")
+        projectDir.mkdirs()
+        projectDir.resolve("settings.gradle").writeText("")
+        projectDir.resolve("Pipfile").writeText("""
+            [[source]]
+            url = "https://pypi.python.org/simple"
+            verify_ssl = true
+            name = "pypi"
+            
+            [packages]
+            requests = "*"
+           
+            [dev-packages]
+            pytest = "*"
+        """.trimIndent())
+        projectDir.resolve("build.gradle").writeText("""
+            plugins {
+                id('org.schnabelsoft.gradle.python')
+            }
+            import org.schnabelsoft.gradle.python.plugin.*
+
+            task foo(type: PipenvRunTask) {
+                command "echo hello"
+                doLast() {
+                    println("foo")
+                }
+            }
+        """.trimIndent())
+
+        // Run the build
+        val runner = GradleRunner.create()
+        runner.forwardOutput()
+        runner.withPluginClasspath()
+        runner.withArguments("foo")
         runner.withProjectDir(projectDir)
         val result = runner.build();
 
         // Verify the result
-        assertTrue(result.output.contains("Hello from plugin 'org.schnabelsoft.gradle.python'"))
+        assertTrue(result.output.contains("hello"))
     }
 }
